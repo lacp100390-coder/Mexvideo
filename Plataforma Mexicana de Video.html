@@ -1,0 +1,915 @@
+<!DOCTYPE html>
+<html lang="es" class="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MexVideo - Plataforma de Video Mexicana Libre de Anuncios</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        mex: {
+                            green: '#006847',
+                            red: '#CE1126',
+                            gold: '#FFC72C',
+                            dark: '#0f172a',
+                            card: '#1e293b'
+                        }
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif']
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body {
+            background-color: #0b0f19;
+            color: #f1f5f9;
+        }
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #0f172a;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #334155;
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #006847;
+        }
+        .mex-gradient-text {
+            background: linear-gradient(135deg, #009c6b 0%, #ffffff 50%, #e61c37 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        .mex-gradient-border {
+            border-image: linear-gradient(to right, #006847, #ffffff, #CE1126) 1;
+        }
+    </style>
+</head>
+<body class="min-h-screen flex flex-col font-sans antialiased">
+
+    <!-- HEADER / NAVIGATION -->
+    <header class="sticky top-0 z-40 bg-slate-900/90 backdrop-blur-md border-b border-slate-800 shadow-lg">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between gap-4">
+            
+            <!-- Logo & Brand -->
+            <div class="flex items-center gap-3 cursor-pointer" onclick="app.navigate('home')">
+                <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-[#006847] via-white to-[#CE1126] p-[2px] shadow-lg shadow-emerald-900/20">
+                    <div class="w-full h-full bg-slate-950 rounded-[10px] flex items-center justify-center">
+                        <i class="fa-solid font-bold text-lg text-emerald-400">🇲🇽</i>
+                    </div>
+                </div>
+                <div>
+                    <span class="text-xl font-black tracking-wider uppercase">Mex<span class="text-emerald-500">Video</span></span>
+                    <span class="hidden sm:inline-block text-[10px] bg-slate-800 text-emerald-400 font-bold px-2 py-0.5 rounded-full border border-emerald-500/30 ml-2">100% Sin Anuncios</span>
+                </div>
+            </div>
+
+            <!-- Search Bar -->
+            <div class="flex-1 max-w-md hidden md:block">
+                <div class="relative">
+                    <input type="text" id="searchInput" oninput="app.handleSearch()" placeholder="Buscar videos por título o descripción..." 
+                        class="w-full bg-slate-800/80 border border-slate-700 rounded-full py-2 pl-10 pr-4 text-sm focus:outline-none focus:border-emerald-500 focus:ring-1 focus:ring-emerald-500 transition-all placeholder-slate-400">
+                    <i class="fa-solid fa-magnifying-glass absolute left-3.5 top-2.5 text-slate-400 text-sm"></i>
+                </div>
+            </div>
+
+            <!-- User Actions & Auth -->
+            <div class="flex items-center gap-3" id="navAuthSection">
+                <!-- Dynamic Content via JS -->
+            </div>
+        </div>
+        
+        <!-- Mobile Search Bar -->
+        <div class="px-4 pb-3 md:hidden">
+            <div class="relative">
+                <input type="text" id="searchInputMobile" oninput="app.handleSearchMobile()" placeholder="Buscar en MexVideo..." 
+                    class="w-full bg-slate-800/80 border border-slate-700 rounded-full py-2 pl-10 pr-4 text-sm focus:outline-none focus:border-emerald-500">
+                <i class="fa-solid fa-magnifying-glass absolute left-3.5 top-2.5 text-slate-400 text-sm"></i>
+            </div>
+        </div>
+    </header>
+
+    <!-- MAIN CONTAINER -->
+    <main class="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-6">
+        
+        <!-- VIEW: HOME / VIDEO FEED -->
+        <section id="viewHome" class="space-y-6">
+            
+            <!-- Hero Banner -->
+            <div class="relative rounded-2xl overflow-hidden bg-gradient-to-r from-slate-900 via-slate-800 to-slate-900 border border-slate-800 p-6 sm:p-8 shadow-xl">
+                <div class="absolute -right-10 -bottom-10 w-64 h-64 bg-emerald-500/10 rounded-full blur-3xl pointer-events-none"></div>
+                <div class="absolute -left-10 -top-10 w-64 h-64 bg-red-500/10 rounded-full blur-3xl pointer-events-none"></div>
+                
+                <div class="relative z-10 max-w-2xl">
+                    <span class="inline-flex items-center gap-2 text-xs font-semibold px-3 py-1 bg-emerald-950/80 text-emerald-400 border border-emerald-800/50 rounded-full mb-3">
+                        <i class="fa-solid fa-shield-halved"></i> Plataforma Libre e Independiente
+                    </span>
+                    <h1 class="text-2xl sm:text-4xl font-extrabold text-white tracking-tight">
+                        La nueva era del contenido <span class="mex-gradient-text">Mexicano</span>
+                    </h1>
+                    <p class="mt-2 text-slate-300 text-sm sm:text-base leading-relaxed">
+                        Un espacio transparente, sin publicidad molesta y rápido. Comparte tus producciones con la comunidad bajo tu propia responsabilidad.
+                    </p>
+                    <div class="mt-5 flex flex-wrap gap-3">
+                        <button onclick="app.openUploadModal()" class="px-5 py-2.5 bg-emerald-600 hover:bg-emerald-500 text-white font-medium text-sm rounded-xl transition-all shadow-lg shadow-emerald-950/40 flex items-center gap-2">
+                            <i class="fa-solid fa-cloud-arrow-up"></i> Subir mi Video
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Category Pills -->
+            <div class="flex items-center gap-2 overflow-x-auto pb-2 scrollbar-none" id="categoriesContainer">
+                <!-- Rendered by JS -->
+            </div>
+
+            <!-- Video Grid Header -->
+            <div class="flex items-center justify-between">
+                <h2 class="text-lg font-bold text-slate-100 flex items-center gap-2">
+                    <i class="fa-solid fa-fire text-red-500"></i> Videos Destacados
+                </h2>
+                <span id="videoCountBadge" class="text-xs text-slate-400 font-medium">0 videos disponibles</span>
+            </div>
+
+            <!-- Video Grid -->
+            <div id="videoGrid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+                <!-- Dynamic Video Cards -->
+            </div>
+
+            <!-- Empty State -->
+            <div id="emptyState" class="hidden text-center py-16 bg-slate-900/50 rounded-2xl border border-dashed border-slate-800">
+                <i class="fa-solid fa-video-slash text-5xl text-slate-600 mb-4"></i>
+                <h3 class="text-lg font-bold text-slate-300">No se encontraron videos</h3>
+                <p class="text-sm text-slate-500 mt-1 max-w-md mx-auto">Prueba ajustando la búsqueda o sé el primero en subir un video en esta categoría.</p>
+                <button onclick="app.openUploadModal()" class="mt-4 px-4 py-2 bg-emerald-600 hover:bg-emerald-500 text-white text-sm font-medium rounded-lg transition-all">
+                    Subir un Video Ahora
+                </button>
+            </div>
+        </section>
+
+        <!-- VIEW: WATCH VIDEO -->
+        <section id="viewWatch" class="hidden space-y-6">
+            <button onclick="app.navigate('home')" class="text-slate-400 hover:text-white text-sm flex items-center gap-2 transition-colors">
+                <i class="fa-solid fa-arrow-left"></i> Volver a explorar
+            </button>
+
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+                <!-- Main Player Column -->
+                <div class="lg:col-span-2 space-y-4">
+                    <!-- Video Container -->
+                    <div class="bg-black rounded-2xl overflow-hidden shadow-2xl border border-slate-800 aspect-video relative group">
+                        <video id="mainPlayer" controls class="w-full h-full object-contain">
+                            Tu navegador no soporta la reproducción de video HTML5.
+                        </video>
+                    </div>
+
+                    <!-- Video Meta Info -->
+                    <div class="bg-slate-900 rounded-2xl p-6 border border-slate-800 space-y-4">
+                        <div class="flex flex-wrap items-start justify-between gap-4">
+                            <div>
+                                <h1 id="watchTitle" class="text-xl sm:text-2xl font-bold text-white leading-tight">Título del Video</h1>
+                                <div class="flex items-center gap-3 mt-2 text-xs text-slate-400">
+                                    <span id="watchCategory" class="px-2.5 py-0.5 rounded-full bg-slate-800 text-emerald-400 font-semibold border border-slate-700">Categoría</span>
+                                    <span>•</span>
+                                    <span id="watchDate">Fecha</span>
+                                    <span>•</span>
+                                    <span id="watchViews"><i class="fa-solid fa-eye mr-1"></i> 0 vistas</span>
+                                </div>
+                            </div>
+                            
+                            <!-- Actions Buttons -->
+                            <div class="flex items-center gap-2">
+                                <button onclick="app.likeCurrentVideo()" class="px-3.5 py-2 bg-slate-800 hover:bg-slate-700 text-slate-200 rounded-xl text-xs font-semibold flex items-center gap-2 transition-all border border-slate-700">
+                                    <i class="fa-solid fa-thumbs-up text-emerald-400"></i> <span id="watchLikes">0</span>
+                                </button>
+                                <button onclick="app.openReportModal()" class="px-3.5 py-2 bg-slate-800 hover:bg-red-950/40 text-red-400 hover:text-red-300 rounded-xl text-xs font-semibold flex items-center gap-2 transition-all border border-slate-700 hover:border-red-800/50" title="Reportar contenido inapropiado">
+                                    <i class="fa-solid fa-flag"></i> Reportar
+                                </button>
+                            </div>
+                        </div>
+
+                        <hr class="border-slate-800">
+
+                        <!-- Uploader Profile Info & Legal Disclaimer -->
+                        <div class="flex items-center justify-between gap-4">
+                            <div class="flex items-center gap-3">
+                                <div class="w-10 h-10 rounded-full bg-gradient-to-r from-emerald-600 to-red-600 flex items-center justify-center font-bold text-white text-sm shadow">
+                                    <span id="watchAvatar">U</span>
+                                </div>
+                                <div>
+                                    <h4 id="watchAuthor" class="text-sm font-bold text-slate-200">Usuario</h4>
+                                    <p class="text-xs text-slate-400">Creador verificado</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Description -->
+                        <div class="bg-slate-950/60 rounded-xl p-4 text-sm text-slate-300 leading-relaxed border border-slate-800/80">
+                            <p id="watchDescription">Descripción del video...</p>
+                        </div>
+
+                        <!-- Content Responsibility Notice -->
+                        <div class="p-3 bg-slate-950/40 border border-slate-800 rounded-xl flex items-start gap-3 text-xs text-slate-400">
+                            <i class="fa-solid fa-scale-balanced text-slate-500 mt-0.5"></i>
+                            <p>
+                                <strong>Descargo de responsabilidad:</strong> Este video fue publicado de forma directa por el creador. MexVideo no inserta publicidad ni altera el contenido. El usuario asume toda la responsabilidad legal por los derechos de autor y la legitimidad del material subido.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Related Videos Sidebar -->
+                <div class="space-y-4">
+                    <h3 class="text-base font-bold text-slate-200">Siguientes Videos</h3>
+                    <div id="relatedVideosList" class="space-y-3">
+                        <!-- Dynamic Related Cards -->
+                    </div>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- FOOTER -->
+    <footer class="mt-auto border-t border-slate-800 bg-slate-950/80 py-8 text-xs text-slate-500">
+        <div class="max-w-7xl mx-auto px-4 text-center space-y-3">
+            <div class="flex items-center justify-center gap-2">
+                <span class="w-2 h-2 rounded-full bg-emerald-500"></span>
+                <span class="w-2 h-2 rounded-full bg-white"></span>
+                <span class="w-2 h-2 rounded-full bg-red-500"></span>
+            </div>
+            <p>© MexVideo — Plataforma de Video Independiente y Sin Anuncios.</p>
+            <p class="max-w-2xl mx-auto text-[11px] text-slate-600">
+                Los usuarios son 100% responsables del contenido alojado y subido a esta red. Respetamos los derechos de autor y mantenemos un entorno libre de desinformación e intrusiones publicitarias.
+            </p>
+        </div>
+    </footer>
+
+    <!-- MODAL: UPLOAD VIDEO -->
+    <div id="modalUpload" class="fixed inset-0 z-50 bg-slate-950/80 backdrop-blur-sm hidden flex items-center justify-center p-4 overflow-y-auto">
+        <div class="bg-slate-900 border border-slate-800 rounded-2xl max-w-lg w-full p-6 shadow-2xl relative space-y-5 my-8">
+            <button onclick="app.closeUploadModal()" class="absolute top-4 right-4 text-slate-400 hover:text-white text-lg">
+                <i class="fa-solid fa-xmark"></i>
+            </button>
+            
+            <div class="flex items-center gap-3">
+                <div class="w-10 h-10 rounded-xl bg-emerald-950/80 border border-emerald-800 flex items-center justify-center text-emerald-400">
+                    <i class="fa-solid fa-cloud-arrow-up text-lg"></i>
+                </div>
+                <div>
+                    <h3 class="text-lg font-bold text-white">Subir Nuevo Video</h3>
+                    <p class="text-xs text-slate-400">Publica directo sin filtros ni interrupciones</p>
+                </div>
+            </div>
+
+            <form id="formUpload" onsubmit="app.handleVideoUpload(event)" class="space-y-4">
+                <div>
+                    <label class="block text-xs font-semibold text-slate-300 mb-1">Título del Video *</label>
+                    <input type="text" id="uploadTitle" required placeholder="Ej: Paisajes de Oaxaca 4K" 
+                        class="w-full bg-slate-800 border border-slate-700 rounded-xl px-3 py-2 text-sm text-white focus:outline-none focus:border-emerald-500">
+                </div>
+
+                <div>
+                    <label class="block text-xs font-semibold text-slate-300 mb-1">Categoría *</label>
+                    <select id="uploadCategory" required class="w-full bg-slate-800 border border-slate-700 rounded-xl px-3 py-2 text-sm text-white focus:outline-none focus:border-emerald-500">
+                        <option value="Cultura">Cultura y Tradiciones</option>
+                        <option value="Viajes">Viajes y Naturaleza</option>
+                        <option value="Música">Música y Arte</option>
+                        <option value="Comedia">Comedia y Entretenimiento</option>
+                        <option value="Tecnología">Tecnología y Ciencia</option>
+                        <option value="Tutoriales">Tutoriales y Educación</option>
+                    </select>
+                </div>
+
+                <div>
+                    <label class="block text-xs font-semibold text-slate-300 mb-1">Fuente del Video *</label>
+                    <div class="flex gap-4 mb-2">
+                        <label class="inline-flex items-center text-xs text-slate-300 cursor-pointer">
+                            <input type="radio" name="videoSourceType" value="file" checked onchange="app.toggleVideoSourceInput()" class="text-emerald-500 focus:ring-0">
+                            <span class="ml-1.5">Archivo Local (MP4/WebM)</span>
+                        </label>
+                        <label class="inline-flex items-center text-xs text-slate-300 cursor-pointer">
+                            <input type="radio" name="videoSourceType" value="url" onchange="app.toggleVideoSourceInput()" class="text-emerald-500 focus:ring-0">
+                            <span class="ml-1.5">Enlace / URL Directo</span>
+                        </label>
+                    </div>
+
+                    <div id="sourceFileBox">
+                        <input type="file" id="uploadFile" accept="video/mp4,video/webm" 
+                            class="w-full text-xs text-slate-400 file:mr-3 file:py-2 file:px-4 file:rounded-xl file:border-0 file:text-xs file:font-semibold file:bg-slate-800 file:text-emerald-400 hover:file:bg-slate-700 cursor-pointer">
+                    </div>
+
+                    <div id="sourceUrlBox" class="hidden">
+                        <input type="url" id="uploadUrl" placeholder="https://ejemplo.com/video.mp4" 
+                            class="w-full bg-slate-800 border border-slate-700 rounded-xl px-3 py-2 text-sm text-white focus:outline-none focus:border-emerald-500">
+                    </div>
+                </div>
+
+                <div>
+                    <label class="block text-xs font-semibold text-slate-300 mb-1">Descripción</label>
+                    <textarea id="uploadDescription" rows="3" placeholder="Detalles de lo que trata tu contenido..." 
+                        class="w-full bg-slate-800 border border-slate-700 rounded-xl px-3 py-2 text-sm text-white focus:outline-none focus:border-emerald-500 resize-none"></textarea>
+                </div>
+
+                <!-- Mandatory Legal Responsibility Box -->
+                <div class="p-3 bg-red-950/20 border border-red-900/40 rounded-xl space-y-2">
+                    <label class="flex items-start gap-2.5 cursor-pointer">
+                        <input type="checkbox" id="uploadAgreement" required class="mt-1 rounded bg-slate-900 border-slate-700 text-emerald-600 focus:ring-0">
+                        <span class="text-xs text-slate-300 leading-snug">
+                            <strong>Acepto la responsabilidad total:</strong> Declaro que soy el único responsable del contenido subido, cuento con los derechos de autor o licencias requeridas y eximo a la plataforma de cualquier reclamo de terceros.
+                        </span>
+                    </label>
+                </div>
+
+                <div class="flex justify-end gap-3 pt-2">
+                    <button type="button" onclick="app.closeUploadModal()" class="px-4 py-2 bg-slate-800 hover:bg-slate-700 text-slate-300 text-xs font-semibold rounded-xl">Cancelar</button>
+                    <button type="submit" class="px-5 py-2 bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-semibold rounded-xl transition-all shadow-lg shadow-emerald-950/40">
+                        Publicar Video
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- MODAL: AUTH (LOGIN / REGISTER) -->
+    <div id="modalAuth" class="fixed inset-0 z-50 bg-slate-950/80 backdrop-blur-sm hidden flex items-center justify-center p-4">
+        <div class="bg-slate-900 border border-slate-800 rounded-2xl max-w-sm w-full p-6 shadow-2xl relative space-y-4">
+            <button onclick="app.closeAuthModal()" class="absolute top-4 right-4 text-slate-400 hover:text-white text-lg">
+                <i class="fa-solid fa-xmark"></i>
+            </button>
+
+            <!-- Auth Tabs -->
+            <div class="flex border-b border-slate-800 pb-2">
+                <button id="tabBtnLogin" onclick="app.switchAuthTab('login')" class="flex-1 pb-2 text-sm font-bold border-b-2 border-emerald-500 text-emerald-400">
+                    Iniciar Sesión
+                </button>
+                <button id="tabBtnRegister" onclick="app.switchAuthTab('register')" class="flex-1 pb-2 text-sm font-bold border-b-2 border-transparent text-slate-400 hover:text-white">
+                    Registrarse
+                </button>
+            </div>
+
+            <!-- Login Form -->
+            <form id="formLogin" onsubmit="app.handleLogin(event)" class="space-y-4">
+                <div>
+                    <label class="block text-xs font-semibold text-slate-300 mb-1">Correo Electrónico</label>
+                    <input type="email" id="loginEmail" required placeholder="tu@correo.com" 
+                        class="w-full bg-slate-800 border border-slate-700 rounded-xl px-3 py-2 text-sm text-white focus:outline-none focus:border-emerald-500">
+                </div>
+                <div>
+                    <label class="block text-xs font-semibold text-slate-300 mb-1">Contraseña</label>
+                    <input type="password" id="loginPassword" required placeholder="••••••••" 
+                        class="w-full bg-slate-800 border border-slate-700 rounded-xl px-3 py-2 text-sm text-white focus:outline-none focus:border-emerald-500">
+                </div>
+                <button type="submit" class="w-full py-2.5 bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-xs rounded-xl shadow-lg transition-all">
+                    Entrar a MexVideo
+                </button>
+            </form>
+
+            <!-- Register Form -->
+            <form id="formRegister" onsubmit="app.handleRegister(event)" class="space-y-4 hidden">
+                <div>
+                    <label class="block text-xs font-semibold text-slate-300 mb-1">Nombre o Apodo</label>
+                    <input type="text" id="regName" required placeholder="Ej: MariaCreadora" 
+                        class="w-full bg-slate-800 border border-slate-700 rounded-xl px-3 py-2 text-sm text-white focus:outline-none focus:border-emerald-500">
+                </div>
+                <div>
+                    <label class="block text-xs font-semibold text-slate-300 mb-1">Correo Electrónico</label>
+                    <input type="email" id="regEmail" required placeholder="tu@correo.com" 
+                        class="w-full bg-slate-800 border border-slate-700 rounded-xl px-3 py-2 text-sm text-white focus:outline-none focus:border-emerald-500">
+                </div>
+                <div>
+                    <label class="block text-xs font-semibold text-slate-300 mb-1">Contraseña</label>
+                    <input type="password" id="regPassword" required placeholder="Mínimo 6 caracteres" 
+                        class="w-full bg-slate-800 border border-slate-700 rounded-xl px-3 py-2 text-sm text-white focus:outline-none focus:border-emerald-500">
+                </div>
+                <button type="submit" class="w-full py-2.5 bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-xs rounded-xl shadow-lg transition-all">
+                    Crear mi Cuenta
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <!-- MODAL: REPORT VIDEO -->
+    <div id="modalReport" class="fixed inset-0 z-50 bg-slate-950/80 backdrop-blur-sm hidden flex items-center justify-center p-4">
+        <div class="bg-slate-900 border border-slate-800 rounded-2xl max-w-md w-full p-6 shadow-2xl relative space-y-4">
+            <button onclick="app.closeReportModal()" class="absolute top-4 right-4 text-slate-400 hover:text-white text-lg">
+                <i class="fa-solid fa-xmark"></i>
+            </button>
+
+            <div class="flex items-center gap-3">
+                <div class="w-10 h-10 rounded-xl bg-red-950/80 border border-red-800 flex items-center justify-center text-red-400">
+                    <i class="fa-solid fa-triangle-exclamation text-lg"></i>
+                </div>
+                <div>
+                    <h3 class="text-lg font-bold text-white">Reportar Contenido</h3>
+                    <p class="text-xs text-slate-400">Mantengamos la plataforma segura e independiente</p>
+                </div>
+            </div>
+
+            <form onsubmit="app.submitReport(event)" class="space-y-4">
+                <div>
+                    <label class="block text-xs font-semibold text-slate-300 mb-1">Motivo del Reporte</label>
+                    <select id="reportReason" required class="w-full bg-slate-800 border border-slate-700 rounded-xl px-3 py-2 text-sm text-white focus:outline-none focus:border-red-500">
+                        <option value="Derechos de Autor">Violación de Derechos de Autor (Copyright)</option>
+                        <option value="Contenido Inapropiado">Contenido Inapropiado / Violento</option>
+                        <option value="Spam">Spam o Engaño</option>
+                        <option value="Otros">Otro motivo legal</option>
+                    </select>
+                </div>
+                <div>
+                    <label class="block text-xs font-semibold text-slate-300 mb-1">Detalles adicionales</label>
+                    <textarea id="reportDetails" rows="3" placeholder="Explica brevemente la razón del reporte..." 
+                        class="w-full bg-slate-800 border border-slate-700 rounded-xl px-3 py-2 text-sm text-white focus:outline-none focus:border-red-500 resize-none"></textarea>
+                </div>
+                <div class="flex justify-end gap-3 pt-2">
+                    <button type="button" onclick="app.closeReportModal()" class="px-4 py-2 bg-slate-800 text-slate-300 text-xs font-semibold rounded-xl">Cancelar</button>
+                    <button type="submit" class="px-5 py-2 bg-red-600 hover:bg-red-500 text-white text-xs font-semibold rounded-xl transition-all shadow-lg">
+                        Enviar Reporte
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- NOTIFICATION TOAST -->
+    <div id="toast" class="fixed bottom-5 right-5 z-50 transform translate-y-20 opacity-0 transition-all duration-300 bg-slate-800 border border-slate-700 text-white px-4 py-3 rounded-xl shadow-2xl flex items-center gap-3 pointer-events-none">
+        <i id="toastIcon" class="fa-solid fa-circle-check text-emerald-400"></i>
+        <span id="toastMessage" class="text-xs font-medium">Notificación</span>
+    </div>
+
+    <!-- JAVASCRIPT APPLICATION LOGIC -->
+    <script>
+        // Initial Mock Data (Default Mexican Culture Videos)
+        const DEFAULT_VIDEOS = [
+            {
+                id: 'demo-1',
+                title: 'Riqueza de la Guelaguetza en Oaxaca',
+                category: 'Cultura',
+                author: 'OaxacaCultural',
+                description: 'Un recorrido visual por las tradiciones, bailes y la gastronomía folclórica de los pueblos oaxaqueños.',
+                url: 'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerBlazes.mp4',
+                thumbnail: 'https://images.unsplash.com/photo-1518638150340-f706e86654de?auto=format&fit=crop&w=800&q=80',
+                date: '2026-03-15',
+                views: 1420,
+                likes: 185
+            },
+            {
+                id: 'demo-2',
+                title: 'Recorriendo los Canales de Xochimilco',
+                category: 'Viajes',
+                author: 'CDMX_Explora',
+                description: 'Paseo en trajinera compartiendo la historia de las chinampas y la música mexicana sobre el agua.',
+                url: 'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerEscapes.mp4',
+                thumbnail: 'https://images.unsplash.com/photo-1512813195386-6cf811ad3542?auto=format&fit=crop&w=800&q=80',
+                date: '2026-03-20',
+                views: 890,
+                likes: 92
+            },
+            {
+                id: 'demo-3',
+                title: 'Mariachi Femenil: Pasión Tradicional',
+                category: 'Música',
+                author: 'ArteSonoroMX',
+                description: 'Interpretación en vivo del son jalisciense por una de las agrupaciones de mariachi más reconocidas.',
+                url: 'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerFun.mp4',
+                thumbnail: 'https://images.unsplash.com/photo-1511671782779-c97d3d27a1d4?auto=format&fit=crop&w=800&q=80',
+                date: '2026-03-22',
+                views: 2310,
+                likes: 310
+            },
+            {
+                id: 'demo-4',
+                title: 'Cómo preparar Mole Poblano Auténtico',
+                category: 'Tutoriales',
+                author: 'CocinaTradición',
+                description: 'Receta paso a paso utilizando chiles secos, especias mexicanas y chocolate para un mole perfecto.',
+                url: 'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerJoylikes.mp4',
+                thumbnail: 'https://images.unsplash.com/photo-1565299585323-38d6b0865b47?auto=format&fit=crop&w=800&q=80',
+                date: '2026-03-25',
+                views: 3450,
+                likes: 420
+            }
+        ];
+
+        const CATEGORIES = ['Todos', 'Cultura', 'Viajes', 'Música', 'Comedia', 'Tecnología', 'Tutoriales'];
+
+        class MexVideoApp {
+            constructor() {
+                this.currentUser = JSON.parse(localStorage.getItem('mexvideo_user')) || null;
+                this.videos = JSON.parse(localStorage.getItem('mexvideo_videos')) || DEFAULT_VIDEOS;
+                this.selectedCategory = 'Todos';
+                this.currentVideoId = null;
+                this.searchQuery = '';
+
+                // Ensure initial data persistency
+                if (!localStorage.getItem('mexvideo_videos')) {
+                    localStorage.setItem('mexvideo_videos', JSON.stringify(DEFAULT_VIDEOS));
+                }
+
+                this.init();
+            }
+
+            init() {
+                this.renderNavAuth();
+                this.renderCategories();
+                this.renderVideoGrid();
+            }
+
+            // --- NAVIGATION SYSTEM ---
+            navigate(view, videoId = null) {
+                document.getElementById('viewHome').classList.add('hidden');
+                document.getElementById('viewWatch').classList.add('hidden');
+
+                if (view === 'home') {
+                    document.getElementById('viewHome').classList.remove('hidden');
+                    // Stop video if playing
+                    const player = document.getElementById('mainPlayer');
+                    player.pause();
+                    player.src = '';
+                    window.scrollTo({ top: 0, behavior: 'smooth' });
+                } else if (view === 'watch' && videoId) {
+                    this.currentVideoId = videoId;
+                    document.getElementById('viewWatch').classList.remove('hidden');
+                    this.loadWatchView(videoId);
+                    window.scrollTo({ top: 0, behavior: 'smooth' });
+                }
+            }
+
+            // --- USER AUTHENTICATION ---
+            renderNavAuth() {
+                const container = document.getElementById('navAuthSection');
+                if (this.currentUser) {
+                    container.innerHTML = `
+                        <button onclick="app.openUploadModal()" class="px-3 py-1.5 bg-emerald-600/20 hover:bg-emerald-600/30 text-emerald-400 border border-emerald-500/30 rounded-xl text-xs font-semibold flex items-center gap-2 transition-all">
+                            <i class="fa-solid fa-plus"></i> <span class="hidden sm:inline">Subir Video</span>
+                        </button>
+                        <div class="flex items-center gap-2 pl-2 border-l border-slate-800">
+                            <div class="w-8 h-8 rounded-full bg-slate-800 border border-emerald-500/50 flex items-center justify-center text-xs font-bold text-emerald-400">
+                                ${this.currentUser.name.charAt(0).toUpperCase()}
+                            </div>
+                            <span class="text-xs font-semibold text-slate-200 hidden sm:inline">${this.currentUser.name}</span>
+                            <button onclick="app.logout()" class="text-slate-400 hover:text-red-400 text-xs ml-1" title="Cerrar Sesión">
+                                <i class="fa-solid fa-right-from-bracket"></i>
+                            </button>
+                        </div>
+                    `;
+                } else {
+                    container.innerHTML = `
+                        <button onclick="app.openAuthModal('login')" class="px-4 py-1.5 text-xs font-semibold text-slate-300 hover:text-white transition-all">
+                            Iniciar Sesión
+                        </button>
+                        <button onclick="app.openAuthModal('register')" class="px-4 py-1.5 bg-emerald-600 hover:bg-emerald-500 text-white rounded-xl text-xs font-bold transition-all shadow-md">
+                            Registrarse
+                        </button>
+                    `;
+                }
+            }
+
+            openAuthModal(tab = 'login') {
+                this.switchAuthTab(tab);
+                document.getElementById('modalAuth').classList.remove('hidden');
+            }
+
+            closeAuthModal() {
+                document.getElementById('modalAuth').classList.add('hidden');
+            }
+
+            switchAuthTab(tab) {
+                const formLogin = document.getElementById('formLogin');
+                const formRegister = document.getElementById('formRegister');
+                const btnLogin = document.getElementById('tabBtnLogin');
+                const btnRegister = document.getElementById('tabBtnRegister');
+
+                if (tab === 'login') {
+                    formLogin.classList.remove('hidden');
+                    formRegister.classList.add('hidden');
+                    btnLogin.className = "flex-1 pb-2 text-sm font-bold border-b-2 border-emerald-500 text-emerald-400";
+                    btnRegister.className = "flex-1 pb-2 text-sm font-bold border-b-2 border-transparent text-slate-400 hover:text-white";
+                } else {
+                    formLogin.classList.add('hidden');
+                    formRegister.classList.remove('hidden');
+                    btnRegister.className = "flex-1 pb-2 text-sm font-bold border-b-2 border-emerald-500 text-emerald-400";
+                    btnLogin.className = "flex-1 pb-2 text-sm font-bold border-b-2 border-transparent text-slate-400 hover:text-white";
+                }
+            }
+
+            handleLogin(e) {
+                e.preventDefault();
+                const email = document.getElementById('loginEmail').value;
+                const name = email.split('@')[0];
+
+                this.currentUser = { email, name };
+                localStorage.setItem('mexvideo_user', JSON.stringify(this.currentUser));
+                this.renderNavAuth();
+                this.closeAuthModal();
+                this.showToast(`¡Bienvenido de nuevo, ${name}!`);
+            }
+
+            handleRegister(e) {
+                e.preventDefault();
+                const name = document.getElementById('regName').value;
+                const email = document.getElementById('regEmail').value;
+
+                this.currentUser = { email, name };
+                localStorage.setItem('mexvideo_user', JSON.stringify(this.currentUser));
+                this.renderNavAuth();
+                this.closeAuthModal();
+                this.showToast(`Cuenta creada exitosamente. ¡Bienvenido, ${name}!`);
+            }
+
+            logout() {
+                this.currentUser = null;
+                localStorage.removeItem('mexvideo_user');
+                this.renderNavAuth();
+                this.showToast('Sesión cerrada correctamente.');
+            }
+
+            // --- CATEGORIES & SEARCH ---
+            renderCategories() {
+                const container = document.getElementById('categoriesContainer');
+                container.innerHTML = CATEGORIES.map(cat => {
+                    const active = this.selectedCategory === cat;
+                    return `
+                        <button onclick="app.setCategory('${cat}')" 
+                            class="px-4 py-1.5 rounded-full text-xs font-semibold whitespace-nowrap transition-all ${
+                                active 
+                                    ? 'bg-emerald-600 text-white shadow-lg shadow-emerald-950/50' 
+                                    : 'bg-slate-800 text-slate-400 hover:bg-slate-700 hover:text-white border border-slate-700/50'
+                            }">
+                            ${cat}
+                        </button>
+                    `;
+                }).join('');
+            }
+
+            setCategory(cat) {
+                this.selectedCategory = cat;
+                this.renderCategories();
+                this.renderVideoGrid();
+            }
+
+            handleSearch() {
+                this.searchQuery = document.getElementById('searchInput').value.toLowerCase();
+                this.renderVideoGrid();
+            }
+
+            handleSearchMobile() {
+                this.searchQuery = document.getElementById('searchInputMobile').value.toLowerCase();
+                this.renderVideoGrid();
+            }
+
+            // --- RENDER FEED / CARDS ---
+            renderVideoGrid() {
+                const grid = document.getElementById('videoGrid');
+                const emptyState = document.getElementById('emptyState');
+                
+                const filtered = this.videos.filter(v => {
+                    const matchesCategory = this.selectedCategory === 'Todos' || v.category === this.selectedCategory;
+                    const matchesSearch = v.title.toLowerCase().includes(this.searchQuery) || v.description.toLowerCase().includes(this.searchQuery);
+                    return matchesCategory && matchesSearch;
+                });
+
+                document.getElementById('videoCountBadge').innerText = `${filtered.length} video${filtered.length !== 1 ? 's' : ''}`;
+
+                if (filtered.length === 0) {
+                    grid.innerHTML = '';
+                    emptyState.classList.remove('hidden');
+                    return;
+                }
+
+                emptyState.classList.add('hidden');
+                grid.innerHTML = filtered.map(v => `
+                    <div class="bg-slate-900 border border-slate-800 rounded-2xl overflow-hidden shadow-lg hover:border-slate-700 transition-all group flex flex-col">
+                        <!-- Thumbnail Container -->
+                        <div class="relative aspect-video bg-slate-950 overflow-hidden cursor-pointer" onclick="app.navigate('watch', '${v.id}')">
+                            <img src="${v.thumbnail || 'https://images.unsplash.com/photo-1518638150340-f706e86654de?auto=format&fit=crop&w=800&q=80'}" 
+                                 alt="${v.title}" 
+                                 class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300">
+                            <div class="absolute inset-0 bg-slate-950/20 group-hover:bg-slate-950/0 transition-all flex items-center justify-center">
+                                <div class="w-12 h-12 rounded-full bg-emerald-600/90 text-white flex items-center justify-center opacity-0 group-hover:opacity-100 transition-all transform scale-75 group-hover:scale-100 shadow-xl">
+                                    <i class="fa-solid fa-play ml-1 text-base"></i>
+                                </div>
+                            </div>
+                            <span class="absolute bottom-2 right-2 px-2 py-0.5 bg-slate-950/80 backdrop-blur-md text-[10px] font-semibold text-emerald-400 rounded-md border border-slate-800">
+                                ${v.category}
+                            </span>
+                        </div>
+
+                        <!-- Info -->
+                        <div class="p-4 flex flex-col flex-1 justify-between space-y-3">
+                            <div>
+                                <h3 onclick="app.navigate('watch', '${v.id}')" class="text-sm font-bold text-slate-100 line-clamp-2 hover:text-emerald-400 transition-colors cursor-pointer">
+                                    ${v.title}
+                                </h3>
+                                <p class="text-xs text-slate-400 line-clamp-2 mt-1">${v.description}</p>
+                            </div>
+
+                            <div class="pt-2 border-t border-slate-800/80 flex items-center justify-between text-[11px] text-slate-400">
+                                <span class="font-semibold text-slate-300"><i class="fa-regular fa-user mr-1 text-emerald-500"></i>${v.author}</span>
+                                <div class="flex items-center gap-2">
+                                    <span><i class="fa-solid fa-eye mr-0.5"></i>${v.views}</span>
+                                    <span><i class="fa-solid fa-thumbs-up mr-0.5 text-emerald-500"></i>${v.likes}</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                `).join('');
+            }
+
+            // --- WATCH VIEW LOGIC ---
+            loadWatchView(id) {
+                const video = this.videos.find(v => v.id === id);
+                if (!video) return;
+
+                // Increment view count
+                video.views += 1;
+                this.saveVideosToStorage();
+
+                // UI updates
+                document.getElementById('watchTitle').innerText = video.title;
+                document.getElementById('watchCategory').innerText = video.category;
+                document.getElementById('watchDate').innerText = video.date;
+                document.getElementById('watchViews').innerHTML = `<i class="fa-solid fa-eye mr-1"></i> ${video.views} vistas`;
+                document.getElementById('watchLikes').innerText = video.likes;
+                document.getElementById('watchAuthor').innerText = video.author;
+                document.getElementById('watchAvatar').innerText = video.author.charAt(0).toUpperCase();
+                document.getElementById('watchDescription').innerText = video.description || 'Sin descripción disponible.';
+
+                // HTML5 Video Player
+                const player = document.getElementById('mainPlayer');
+                player.src = video.url;
+                player.play().catch(() => {}); // Auto-play fallback if blocked
+
+                // Load Related Videos
+                const relatedContainer = document.getElementById('relatedVideosList');
+                const related = this.videos.filter(v => v.id !== id).slice(0, 5);
+                
+                relatedContainer.innerHTML = related.map(rv => `
+                    <div onclick="app.navigate('watch', '${rv.id}')" class="flex gap-3 bg-slate-900 border border-slate-800/80 hover:border-slate-700 rounded-xl p-2 cursor-pointer transition-all group">
+                        <div class="w-28 h-18 bg-slate-950 rounded-lg overflow-hidden flex-shrink-0 relative">
+                            <img src="${rv.thumbnail || 'https://images.unsplash.com/photo-1518638150340-f706e86654de?auto=format&fit=crop&w=800&q=80'}" class="w-full h-full object-cover group-hover:scale-105 transition-transform">
+                        </div>
+                        <div class="flex-1 min-w-0">
+                            <h4 class="text-xs font-bold text-slate-200 line-clamp-2 group-hover:text-emerald-400 transition-colors">${rv.title}</h4>
+                            <p class="text-[11px] text-slate-400 mt-1">${rv.author}</p>
+                            <span class="text-[10px] text-slate-500">${rv.views} vistas</span>
+                        </div>
+                    </div>
+                `).join('');
+            }
+
+            likeCurrentVideo() {
+                if (!this.currentVideoId) return;
+                const video = this.videos.find(v => v.id === this.currentVideoId);
+                if (video) {
+                    video.likes += 1;
+                    document.getElementById('watchLikes').innerText = video.likes;
+                    this.saveVideosToStorage();
+                    this.showToast('¡Te ha gustado este video!');
+                }
+            }
+
+            // --- VIDEO UPLOAD LOGIC ---
+            openUploadModal() {
+                if (!this.currentUser) {
+                    this.showToast('Debes iniciar sesión para subir un video');
+                    this.openAuthModal('login');
+                    return;
+                }
+                document.getElementById('modalUpload').classList.remove('hidden');
+            }
+
+            closeUploadModal() {
+                document.getElementById('modalUpload').classList.add('hidden');
+                document.getElementById('formUpload').reset();
+            }
+
+            toggleVideoSourceInput() {
+                const sourceType = document.querySelector('input[name="videoSourceType"]:checked').value;
+                const fileBox = document.getElementById('sourceFileBox');
+                const urlBox = document.getElementById('sourceUrlBox');
+
+                if (sourceType === 'file') {
+                    fileBox.classList.remove('hidden');
+                    urlBox.classList.add('hidden');
+                } else {
+                    fileBox.classList.add('hidden');
+                    urlBox.classList.remove('hidden');
+                }
+            }
+
+            handleVideoUpload(e) {
+                e.preventDefault();
+
+                const title = document.getElementById('uploadTitle').value.trim();
+                const category = document.getElementById('uploadCategory').value;
+                const description = document.getElementById('uploadDescription').value.trim();
+                const agreement = document.getElementById('uploadAgreement').checked;
+                const sourceType = document.querySelector('input[name="videoSourceType"]:checked').value;
+
+                if (!agreement) {
+                    this.showToast('Debes aceptar el compromiso de responsabilidad legal');
+                    return;
+                }
+
+                let videoUrl = '';
+
+                if (sourceType === 'url') {
+                    videoUrl = document.getElementById('uploadUrl').value.trim();
+                    if (!videoUrl) {
+                        this.showToast('Por favor ingresa la URL del video');
+                        return;
+                    }
+                    this.finalizeUpload(title, category, description, videoUrl);
+                } else {
+                    const fileInput = document.getElementById('uploadFile');
+                    if (!fileInput.files || fileInput.files.length === 0) {
+                        this.showToast('Por favor selecciona un archivo de video local');
+                        return;
+                    }
+                    const file = fileInput.files[0];
+                    // Create blob URL for local preview
+                    videoUrl = URL.createObjectURL(file);
+                    this.finalizeUpload(title, category, description, videoUrl);
+                }
+            }
+
+            finalizeUpload(title, category, description, videoUrl) {
+                const newVideo = {
+                    id: 'video-' + Date.now(),
+                    title: title,
+                    category: category,
+                    author: this.currentUser.name,
+                    description: description,
+                    url: videoUrl,
+                    thumbnail: 'https://images.unsplash.com/photo-1508739773434-c26b3d09e071?auto=format&fit=crop&w=800&q=80',
+                    date: new Date().toISOString().split('T')[0],
+                    views: 1,
+                    likes: 0
+                };
+
+                this.videos.unshift(newVideo);
+                this.saveVideosToStorage();
+                this.closeUploadModal();
+                this.renderVideoGrid();
+                this.showToast('¡Video publicado exitosamente en MexVideo!');
+                this.navigate('watch', newVideo.id);
+            }
+
+            // --- REPORTING SYSTEM ---
+            openReportModal() {
+                document.getElementById('modalReport').classList.remove('hidden');
+            }
+
+            closeReportModal() {
+                document.getElementById('modalReport').classList.add('hidden');
+            }
+
+            submitReport(e) {
+                e.preventDefault();
+                const reason = document.getElementById('reportReason').value;
+                this.closeReportModal();
+                this.showToast(`Reporte por "${reason}" recibido. Nuestro equipo revisará el video.`);
+            }
+
+            // --- UTILS & STORAGE ---
+            saveVideosToStorage() {
+                localStorage.setItem('mexvideo_videos', JSON.stringify(this.videos));
+            }
+
+            showToast(message) {
+                const toast = document.getElementById('toast');
+                const toastMsg = document.getElementById('toastMessage');
+                toastMsg.innerText = message;
+                toast.classList.remove('translate-y-20', 'opacity-0');
+                
+                setTimeout(() => {
+                    toast.classList.add('translate-y-20', 'opacity-0');
+                }, 3500);
+            }
+        }
+
+        // Initialize App on load
+        let app;
+        window.onload = function() {
+            app = new MexVideoApp();
+        };
+    </script>
+</body>
+</html>
